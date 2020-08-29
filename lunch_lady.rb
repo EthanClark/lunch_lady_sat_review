@@ -1,6 +1,8 @@
 
 require_relative 'wallet'
 require_relative 'user'
+require_relative 'plate'
+require_relative 'dessert'
 
 class MainDish
   attr_accessor :name, :price
@@ -28,6 +30,7 @@ class LunchLady
   def initialize
     @main_dishes = [MainDish.new("Apple", 2), MainDish.new("Life Changing Coffee", 500), MainDish.new("Pasta", 250)]
     @side_dishes = [SideDish.new("Grilled Veggies", 10), SideDish.new("Mashed Taters", 10), SideDish.new("Rocks", 1)]
+    @plate = Plate.new # --> it has an empty array
     start_with_name
   end
 
@@ -55,8 +58,10 @@ class LunchLady
         puts "1) Order Main Dish"
         puts "2) Order Side Dish"
         puts "3) See Total"
-        puts "4) Checkout"
-        puts "5) Exit"
+        puts "4) Dessert Menu"
+        puts "5) Checkout"
+        puts "6) Add More Money"
+        puts "7) Exit"
         get_menu_choice
   end
 
@@ -70,8 +75,13 @@ class LunchLady
       when 3
         see_total
       when 4
-        checkout
+        Dessert.new(@user, @user_wallet, @plate)
+        print_menu
       when 5
+        checkout
+      when 6
+        add_money
+      when 7
         puts "CYA IDIOT"
         exit!
       else
@@ -91,13 +101,15 @@ class LunchLady
         map_dishes(@main_dishes)
         user_choice = gets.strip.to_i
         puts @main_dishes[user_choice - 1].name
+        @plate = Plate.new(@main_dishes[user_choice - 1].name)
+        @user_wallet.subtract_from_amount(@main_dishes[user_choice - 1].price)
       end
       
       def order_side
         map_dishes(@side_dishes)
         user_choice = gets.strip.to_i
         puts @side_dishes[user_choice - 1].name
-        
+
       end
 
       def see_total
@@ -106,6 +118,14 @@ class LunchLady
       def checkout
       end
 
+      def add_money
+         @user_wallet.add_more_money
+         print_menu
+      end
+
+      def dessert_menu
+
+      end
 
 
 end
